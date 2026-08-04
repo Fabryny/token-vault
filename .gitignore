@@ -1,0 +1,49 @@
+
+.env
+.env.local
+.env.*.local
+
+!.env.example
+
+*.pem
+*.key
+*.p12
+*.pfx
+
+#  Go  (backend/)
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/backend/api
+/backend/bin/
+
+# Binário e saída de teste
+*.test
+*.out
+coverage.html
+
+# Go workspaces (local)
+go.work
+go.work.sum
+
+#  Node / Angular  (frontend/)
+node_modules/
+dist/
+.angular/
+*.tsbuildinfo
+
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# IDE e sistema operacional
+.vscode/
+.idea/
+*.swp
+*~
+
+Thumbs.db
+desktop.ini
+.DS_Store
