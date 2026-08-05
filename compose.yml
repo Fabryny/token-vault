@@ -1,8 +1,6 @@
 services:
   db:
     image: postgres:18.4-alpine
-    container_name: token-vault-db
-    restart: unless-stopped
     environment:
       POSTGRES_USER:     ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -18,6 +16,34 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      # @db:5432 — dentro da rede do Docker a porta e a ORIGINAL.
+      # O 5433 do bloco ports acima e so a publicacao no host.
+      APP_DATABASE_URL:   postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      APP_ENCRYPTION_KEY: ${APP_ENCRYPTION_KEY}
+      APP_JWT_SECRET:     ${APP_JWT_SECRET}
+      APP_COOKIE_SECURE:  ${APP_COOKIE_SECURE}
+      APP_PORT:           8080
+    depends_on:
+      db:
+        condition: service_healthy
+    # SEM ports: quem fala com a API e o nginx, pela rede interna.
+    # Publicar a 8080 abriria um caminho que ignora o front.
+    # Para depurar, descomente:
+    # ports:
+    #   - "8080:8080"
+
+  front:
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
 
 volumes:
   pgdata:
