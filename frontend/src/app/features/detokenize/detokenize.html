@@ -1,0 +1,39 @@
+<div animate.enter="rise-in">
+  <ui-panel
+    eyebrow="Saída do cofre"
+    heading="Destokenizar"
+    sub="A única operação que devolve o cartão em claro. Exige sessão e posse do token."
+  >
+    <form class="form" (submit)="submit($event)" novalidate>
+      <ui-field
+        label="Token"
+        autocomplete="off"
+        [mono]="true"
+        [required]="true"
+        [(value)]="token"
+      />
+
+      @if (error()) {
+        <p class="alert" role="alert">{{ error() }}</p>
+      }
+
+      <ui-button class="full" type="submit" [loading]="loading()">
+        Destokenizar
+      </ui-button>
+    </form>
+
+    @if (pan(); as p) {
+      <!-- Âmbar: a cor reservada para "há cartão em claro na tela". -->
+      <div class="exposed" animate.enter="vault-in">
+        <div class="warn">
+          <span class="dot" aria-hidden="true"></span>
+          Dado sensível exposto — oculta em {{ countdown() }}s
+        </div>
+
+        <p class="value mono">{{ p }}</p>
+
+        <ui-button variant="ghost" (click)="clear()">Ocultar agora</ui-button>
+      </div>
+    }
+  </ui-panel>
+</div>
