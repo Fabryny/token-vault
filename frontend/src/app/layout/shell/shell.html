@@ -1,0 +1,44 @@
+<div class="shell">
+  <header class="bar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="name">TOKEN<em>VAULT</em></span>
+    </div>
+
+    <button class="exit" type="button" (click)="logout()" [disabled]="leaving()">
+      <span class="sr-only">Encerrar sessão</span>
+      <span aria-hidden="true">Sair</span>
+    </button>
+  </header>
+
+  <!--
+    Navegação por segmento. A pílula é UM elemento que desliza — não dois
+    fundos que acendem e apagam. É isso que dá continuidade espacial:
+    o olho segue o objeto em vez de reencontrá-lo do outro lado.
+  -->
+  <nav class="seg" aria-label="Operações do vault">
+    <span class="pill" aria-hidden="true" [style.transform]="pillShift()"></span>
+
+    <a
+      class="tab"
+      routerLink="/tokenize"
+      routerLinkActive="on"
+      [attr.aria-current]="active() === 'tokenize' ? 'page' : null"
+    >
+      Tokenizar
+    </a>
+
+    <a
+      class="tab"
+      routerLink="/detokenize"
+      routerLinkActive="on"
+      [attr.aria-current]="active() === 'detokenize' ? 'page' : null"
+    >
+      Destokenizar
+    </a>
+  </nav>
+
+  <main class="stage">
+    <router-outlet />
+  </main>
+</div>
