@@ -5,6 +5,11 @@
 
 !.env.example
 
+.claude/
+CLAUDE.md
+FASES.md
+docs/
+
 *.pem
 *.key
 *.p12
