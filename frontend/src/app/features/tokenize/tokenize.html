@@ -1,0 +1,48 @@
+<div animate.enter="rise-in">
+  <ui-panel
+    eyebrow="Entrada do cofre"
+    heading="Tokenizar cartão"
+    sub="O número é criptografado e trocado por um token aleatório. Ele não volta daqui."
+  >
+    <form class="form" (submit)="submit($event)" novalidate>
+      <ui-field
+        label="Número do cartão"
+        inputmode="numeric"
+        autocomplete="off"
+        hint="13 a 19 dígitos. Letras e espaços são descartados."
+        [maxlength]="19"
+        [mono]="true"
+        [required]="true"
+        [digitsOnly]="true"
+        [(value)]="pan"
+      />
+
+      @if (error()) {
+        <p class="alert" role="alert">{{ error() }}</p>
+      }
+
+      <ui-button class="full" type="submit" [loading]="loading()">
+        Tokenizar
+      </ui-button>
+    </form>
+
+    @if (result(); as r) {
+      <div class="vault" animate.enter="vault-in">
+        <div class="row">
+          <span class="tag">Cartão</span>
+          <span class="masked mono">•••• {{ r.last4 }}</span>
+        </div>
+
+        <div class="row token">
+          <span class="tag">Token</span>
+          <!-- #tokenText: o anime.js reescreve o textContent deste nó. -->
+          <span #tokenText class="mono value"></span>
+        </div>
+
+        <ui-button variant="ghost" (click)="copy(r.token)">
+          {{ copied() ? 'Copiado' : 'Copiar token' }}
+        </ui-button>
+      </div>
+    }
+  </ui-panel>
+</div>
