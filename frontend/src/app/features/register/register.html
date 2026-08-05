@@ -1,0 +1,51 @@
+<div class="auth-stage">
+  <div class="auth-col" animate.enter="rise-in">
+    <ui-panel
+      eyebrow="Novo acesso"
+      heading="Criar conta"
+      sub="Cada token pertence a um dono. É esta conta que vai poder recuperá-los."
+    >
+      <form class="form" (submit)="submit($event)" novalidate>
+        <ui-field
+          label="E-mail"
+          type="email"
+          autocomplete="username"
+          inputmode="email"
+          [required]="true"
+          [(value)]="email"
+          [error]="emailError()"
+        />
+
+        <ui-field
+          label="Senha"
+          type="password"
+          autocomplete="new-password"
+          hint="Mínimo de 8 caracteres. Comprimento protege mais que símbolo."
+          [required]="true"
+          [(value)]="password"
+          [error]="passwordError()"
+        />
+
+        <ui-field
+          label="Repetir senha"
+          type="password"
+          autocomplete="new-password"
+          [required]="true"
+          [(value)]="confirm"
+          [error]="confirmError()"
+        />
+
+        @if (error()) {
+          <p class="alert" role="alert">{{ error() }}</p>
+        }
+
+        <ui-button class="full" type="submit" [loading]="loading()">Criar conta</ui-button>
+      </form>
+
+      <p class="foot">
+        Já tem acesso?
+        <a routerLink="/login">Entrar</a>
+      </p>
+    </ui-panel>
+  </div>
+</div>

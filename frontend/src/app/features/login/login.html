@@ -1,0 +1,39 @@
+<div class="auth-stage">
+  <div class="auth-col" animate.enter="rise-in">
+    <ui-panel
+      eyebrow="Acesso restrito"
+      heading="Entrar no vault"
+      sub="Dado de cartão só sai daqui com sessão autenticada."
+    >
+      <form class="form" (submit)="submit($event)" novalidate>
+        <ui-field
+          label="E-mail"
+          type="email"
+          autocomplete="username"
+          inputmode="email"
+          [required]="true"
+          [(value)]="email"
+        />
+
+        <ui-field
+          label="Senha"
+          type="password"
+          autocomplete="current-password"
+          [required]="true"
+          [(value)]="password"
+        />
+
+        @if (error()) {
+          <p class="alert" role="alert">{{ error() }}</p>
+        }
+
+        <ui-button class="full" type="submit" [loading]="loading()">Entrar</ui-button>
+      </form>
+
+      <p class="foot">
+        Ainda não tem acesso?
+        <a routerLink="/register">Criar conta</a>
+      </p>
+    </ui-panel>
+  </div>
+</div>
