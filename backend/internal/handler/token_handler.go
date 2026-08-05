@@ -12,9 +12,6 @@ import (
 	"github.com/Fabryny/token-vault/backend/internal/usecase"
 )
 
-// DevOwnerID é o usuário semeado no init.sql.
-var DevOwnerID = uuid.MustParse("00000000-0000-0000-0000-000000000001")
-
 type TokenHandler struct {
 	tokenize   *usecase.Tokenize
 	detokenize *usecase.Detokenize
@@ -37,7 +34,21 @@ type tokenizeResponse struct {
 	Last4 string `json:"last4"`
 }
 
+func (h *TokenHandler) getOwnerID(c *gin.Context) (uuid.UUID, bool) {
+	ownerID, ok := userIDFrom(c)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return uuid.Nil, false
+	}
+	return ownerID, true
+}
+
 func (h *TokenHandler) Tokenize(c *gin.Context) {
+	ownerID, ok := h.getOwnerID(c)
+	if !ok {
+		return
+	}
+
 	var req tokenizeRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		// NUNCA err.Error() aqui: a mensagem do validator pode ecoar o PAN.
@@ -45,7 +56,7 @@ func (h *TokenHandler) Tokenize(c *gin.Context) {
 		return
 	}
 
-	t, err := h.tokenize.Execute(c.Request.Context(), req.PAN, DevOwnerID)
+	t, err := h.tokenize.Execute(c.Request.Context(), req.PAN, ownerID)
 	if err != nil {
 		if errors.Is(err, domain.ErrInvalidPAN) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid card number"})
@@ -79,7 +90,12 @@ func (h *TokenHandler) Detokenize(c *gin.Context) {
 		return
 	}
 
-	pan, err := h.detokenize.Execute(c.Request.Context(), req.Token)
+	ownerID, ok := h.getOwnerID(c)
+	if !ok {
+		return
+	}
+
+	pan, err := h.detokenize.Execute(c.Request.Context(), req.Token, ownerID)
 	if err != nil {
 		// Mesma resposta para "não existe" e "expirou": a diferença é
 		// informação útil para quem está sondando tokens.
